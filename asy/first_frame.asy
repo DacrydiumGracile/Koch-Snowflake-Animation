@@ -90,11 +90,10 @@ pair[] snowflake_vertexs(int iterations, pair O = (0,0)) {
   return affinePoints;
 }
 
-pair[] shift_snowflake(pair[] snowV, pair dxy){
+void shift_snowflake(pair[] snowV, pair dxy){
   for (int n = 0; n < snowV.length; ++n) {
     snowV[n] = snowV[n] + dxy;
   }
-  return snowV;
 }
 
 pair[] copy_snow(pair[] snowV){
@@ -108,17 +107,17 @@ pair[] copy_snow(pair[] snowV){
 void stretching_part(int part, int iterations, pair[] snowV, pair dxy) {
   assert(part > 0 && part < 7, 
         "part должна быть между 1 и 6 (включая границы)");
-  int k = 4^(iterations - 2);
+  int m = 4^(iterations - 2);
   if (part > 0 && part < 6) {
-    for (int n = 2*(part - 1)*k + (part - 1); 
-             n <= 2*(part + 1)*k + part; ++n) {
+    for (int n = 2*(part - 1)*m + (part - 1); 
+             n <= 2*(part + 1)*m + part; ++n) {
       snowV[n] = snowV[n] + dxy;
     } 
   } else if (part == 6) {
-    for (int n = 10*k + 5; n <= 12*k + 5; ++n) {
+    for (int n = 10*m + 5; n <= 12*m + 5; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
-    for (int n = 0; n <= 2*k; ++n) {
+    for (int n = 0; n <= 2*m; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
   }  
@@ -128,15 +127,16 @@ pair[][] snowV;
 picture frame1;
 size(frame1, 800,800);
 iterations = 3;
-int k = 3^(iterations - 2);
+int k = 3^(iterations - 3);
+int k3 = 3*k;
 snowV.push(snowflake_vertexs(iterations)); // snowflake 1
-snowV.push(snowflake_vertexs(iterations, (2*k + 1, 4*k - 1))); // snowflake 2
-snowV.push(snowflake_vertexs(iterations, (5*k + 1, 7*k - 1))); // snowflake 3
-snowV.push(snowflake_vertexs(iterations, (9*k, 9*k))); // snowflake 4
-snowV.push(snowflake_vertexs(iterations, (11*k, 13*k))); // snowflake 5
-snowV.push(snowflake_vertexs(iterations, (15*k, 15*k))); // snowflake 6
-snowV.push(snowflake_vertexs(iterations, (17*k, 19*k))); // snowflake 7
-snowV.push(snowflake_vertexs(iterations, (21*k, 21*k))); // snowflake 8
+snowV.push(snowflake_vertexs(iterations, (2*k3 + k, 4*k3 - k))); // snowflake 2
+snowV.push(snowflake_vertexs(iterations, (5*k3 + k, 7*k3 - k))); // snowflake 3
+snowV.push(snowflake_vertexs(iterations, (9*k3, 9*k3))); // snowflake 4
+snowV.push(snowflake_vertexs(iterations, (11*k3, 13*k3))); // snowflake 5
+snowV.push(snowflake_vertexs(iterations, (15*k3, 15*k3))); // snowflake 6
+snowV.push(snowflake_vertexs(iterations, (17*k3, 19*k3))); // snowflake 7
+snowV.push(snowflake_vertexs(iterations, (21*k3, 21*k3))); // snowflake 8
 // for 5 snowflake
 stretching_part(3, iterations, snowV[4], (1*(iterations-1), 1*(iterations-1)));
 // for 6 snowflake
@@ -152,21 +152,21 @@ stretching_part(4, iterations, snowV[7], (6*(iterations-1), 6*(iterations-1)));
 stretching_part(6, iterations, snowV[7], (4*(iterations-1), 4*(iterations-1)));
 
 snowV.push(snowflake_vertexs(iterations, 
-  (23*k + 6*(iterations-1), 25*k + 6*(iterations-1)))); // snowflake 9
+  (23*k3 + 6*(iterations-1), 25*k3 + 6*(iterations-1)))); // snowflake 9
 snowV.push(snowflake_vertexs(iterations, 
-  (27*k - 1 + 6*(iterations-1), 27*k + 1 + 6*(iterations-1)))); // snowflake 10
+  (27*k3 - k + 6*(iterations-1), 27*k3 + k + 6*(iterations-1)))); // snowflake 10
 snowV.push(snowflake_vertexs(iterations, 
-  (30*k - 1 + 6*(iterations-1), 30*k + 1 + 6*(iterations-1)))); // snowflake 11
+  (30*k3 - k + 6*(iterations-1), 30*k3 + k + 6*(iterations-1)))); // snowflake 11
 snowV.push(snowflake_vertexs(iterations, 
-  (32*k + 6*(iterations-1), 34*k + 6*(iterations-1)))); // snowflake 12
+  (32*k3 + 6*(iterations-1), 34*k3 + 6*(iterations-1)))); // snowflake 12
 snowV.push(snowflake_vertexs(iterations, 
-  (36*k + 6*(iterations-1), 36*k + 6*(iterations-1)))); // snowflake 13
+  (36*k3 + 6*(iterations-1), 36*k3 + 6*(iterations-1)))); // snowflake 13
 snowV.push(snowflake_vertexs(iterations, 
-  (38*k + 6*(iterations-1), 40*k + 6*(iterations-1)))); // snowflake 14
+  (38*k3 + 6*(iterations-1), 40*k3 + 6*(iterations-1)))); // snowflake 14
 snowV.push(snowflake_vertexs(iterations, 
-  (42*k + 6*(iterations-1), 42*k + 6*(iterations-1)))); // snowflake 15
+  (42*k3 + 6*(iterations-1), 42*k3 + 6*(iterations-1)))); // snowflake 15
 snowV.push(snowflake_vertexs(iterations, 
-  (44*k + 6*(iterations-1), 46*k + 6*(iterations-1)))); // snowflake 16
+  (44*k3 + 6*(iterations-1), 46*k3 + 6*(iterations-1)))); // snowflake 16
 // for 13 snowflake
 stretching_part(2, iterations, snowV[12], (1*(iterations-1), 1*(iterations-1)));
 // for 14 snowflake
@@ -186,15 +186,20 @@ stretching_part(5, iterations, snowV[15], (4*(iterations-1), 4*(iterations-1)));
 // Now let's duplicate to the left with an offset
 int snowV_length = snowV.length;
 for(int n = snowV_length-16; n < snowV_length - 8; ++n){
-  snowV.push(shift_snowflake(copy_snow(snowV[n]), 
-    ((27*k + 6*(iterations-1)), (21*k + 6*(iterations-1)))
-  ));
+  pair[] new_snowV = copy_snow(snowV[n]);
+  shift_snowflake(new_snowV, 
+    ((27*k3 + 6*(iterations-1)), (21*k3 + 6*(iterations-1)))
+  );
+  snowV.push(new_snowV);
 } 
 for(int n = snowV_length - 8; n < snowV_length; ++n){
-  snowV.push(shift_snowflake(copy_snow(snowV[n]), 
-    ((-21*k - 6*(iterations-1))  , (-27*k - 6*(iterations-1))) 
-  ));
+  pair[] new_snowV = copy_snow(snowV[n]);
+  shift_snowflake(new_snowV, 
+    ((-21*k3 - 6*(iterations-1))  , (-27*k3 - 6*(iterations-1))) 
+  );
+  snowV.push(new_snowV);
 } 
+
 
 // for (int i = 1; i < 2; ++i){
 //   snowV_length = snowV.length;

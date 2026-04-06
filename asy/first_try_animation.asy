@@ -2,7 +2,7 @@ import animation;
 import graph;
 import grid_and_axes;
 settings.tex="pdflatex";
-settings.outformat = "png";
+settings.outformat = "pdf";
 pair e1 = (1/2, sqrt(3)/2);
 pair e2 = (1/2, -sqrt(3)/2);
 transform T = (0,0,e1.x, e2.x, e1.y, e2.y); // аффинное -> декартово
@@ -13,7 +13,8 @@ int width = 800;
 int height = 800;
 int steps = 4;
 int all_frame = 16*steps; // 16 * steps
-int k = 3^(iterations - 2);
+int k = 3^(iterations - 3);
+int k3 = 3*k;
 
 pair[][] snowV; 
 picture frame1;
@@ -118,17 +119,17 @@ pair[] copy_snow(pair[] snowV){
 void stretching_part(int part, int iterations, pair[] snowV, pair dxy) {
   assert(part > 0 && part < 7, 
         "part должна быть между 1 и 6 (включая границы)");
-  int k = 4^(iterations - 2);
+  int m = 4^(iterations - 2);
   if (part > 0 && part < 6) {
-    for (int n = 2*(part - 1)*k + (part - 1); 
-             n <= 2*(part + 1)*k + part; ++n) {
+    for (int n = 2*(part - 1)*m + (part - 1); 
+             n <= 2*(part + 1)*m + part; ++n) {
       snowV[n] = snowV[n] + dxy;
     } 
   } else if (part == 6) {
-    for (int n = 10*k + 5; n <= 12*k + 5; ++n) {
+    for (int n = 10*m + 5; n <= 12*m + 5; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
-    for (int n = 0; n <= 2*k; ++n) {
+    for (int n = 0; n <= 2*m; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
   }  
@@ -137,11 +138,11 @@ void stretching_part(int part, int iterations, pair[] snowV, pair dxy) {
 pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
   int i = iterations;
   if (1 <= frame_number && frame_number <= steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (steps + 1 <= frame_number && frame_number <= 2*steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (2*steps + 1 <= frame_number && frame_number <= 3*steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (3*steps + 1 <= frame_number && frame_number <= 4*steps) {
       stretching_part(3, i, snowV, (1*(i-1)/steps, 1*(i-1)/steps));
   } else if (4*steps + 1 <= frame_number && frame_number <= 5*steps) {
@@ -157,11 +158,11 @@ pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
   } else if (7*steps + 1 <= frame_number && frame_number <= 8*steps) {
       stretching_part(5, i, snowV, (2*(i-1)/steps, 2*(i-1)/steps));
   } else if (8*steps + 1 <= frame_number && frame_number <= 9*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (9*steps + 1 <= frame_number && frame_number <= 10*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (10*steps + 1 <= frame_number && frame_number <= 11*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (11*steps + 1 <= frame_number && frame_number <= 12*steps) {
     stretching_part(2, i, snowV, (1*(i-1)/steps, 1*(i-1)/steps));
   } else if (12*steps + 1 <= frame_number && frame_number <= 13*steps) {
@@ -189,19 +190,18 @@ pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
   // draw(pic, snow, glowPen2);
   // draw(pic, snow, glowPen3);
   fill(pic, snow, color_snowflake);
-  // fill(pic, snow,  darkblue+opacity(0.9));
   return snowV;
 }
 
 
 snowV.push(snowflake_vertexs(iterations)); // snowflake 1
-snowV.push(snowflake_vertexs(iterations, (2*k + 1, 4*k - 1))); // snowflake 2
-snowV.push(snowflake_vertexs(iterations, (5*k + 1, 7*k - 1))); // snowflake 3
-snowV.push(snowflake_vertexs(iterations, (9*k, 9*k))); // snowflake 4
-snowV.push(snowflake_vertexs(iterations, (11*k, 13*k))); // snowflake 5
-snowV.push(snowflake_vertexs(iterations, (15*k, 15*k))); // snowflake 6
-snowV.push(snowflake_vertexs(iterations, (17*k, 19*k))); // snowflake 7
-snowV.push(snowflake_vertexs(iterations, (21*k, 21*k))); // snowflake 8
+snowV.push(snowflake_vertexs(iterations, (2*k3 + k, 4*k3 - k))); // snowflake 2
+snowV.push(snowflake_vertexs(iterations, (5*k3 + k, 7*k3 - k))); // snowflake 3
+snowV.push(snowflake_vertexs(iterations, (9*k3, 9*k3))); // snowflake 4
+snowV.push(snowflake_vertexs(iterations, (11*k3, 13*k3))); // snowflake 5
+snowV.push(snowflake_vertexs(iterations, (15*k3, 15*k3))); // snowflake 6
+snowV.push(snowflake_vertexs(iterations, (17*k3, 19*k3))); // snowflake 7
+snowV.push(snowflake_vertexs(iterations, (21*k3, 21*k3))); // snowflake 8
 // for 5 snowflake
 stretching_part(3, iterations, snowV[4], (1*(iterations-1), 1*(iterations-1)));
 // for 6 snowflake
@@ -217,21 +217,21 @@ stretching_part(4, iterations, snowV[7], (6*(iterations-1), 6*(iterations-1)));
 stretching_part(6, iterations, snowV[7], (4*(iterations-1), 4*(iterations-1)));
 
 snowV.push(snowflake_vertexs(iterations, 
-  (23*k + 6*(iterations-1), 25*k + 6*(iterations-1)))); // snowflake 9
+  (23*k3 + 6*(iterations-1), 25*k3 + 6*(iterations-1)))); // snowflake 9
 snowV.push(snowflake_vertexs(iterations, 
-  (27*k - 1 + 6*(iterations-1), 27*k + 1 + 6*(iterations-1)))); // snowflake 10
+  (27*k3 - k + 6*(iterations-1), 27*k3 + k + 6*(iterations-1)))); // snowflake 10
 snowV.push(snowflake_vertexs(iterations, 
-  (30*k - 1 + 6*(iterations-1), 30*k + 1 + 6*(iterations-1)))); // snowflake 11
+  (30*k3 - k + 6*(iterations-1), 30*k3 + k + 6*(iterations-1)))); // snowflake 11
 snowV.push(snowflake_vertexs(iterations, 
-  (32*k + 6*(iterations-1), 34*k + 6*(iterations-1)))); // snowflake 12
+  (32*k3 + 6*(iterations-1), 34*k3 + 6*(iterations-1)))); // snowflake 12
 snowV.push(snowflake_vertexs(iterations, 
-  (36*k + 6*(iterations-1), 36*k + 6*(iterations-1)))); // snowflake 13
+  (36*k3 + 6*(iterations-1), 36*k3 + 6*(iterations-1)))); // snowflake 13
 snowV.push(snowflake_vertexs(iterations, 
-  (38*k + 6*(iterations-1), 40*k + 6*(iterations-1)))); // snowflake 14
+  (38*k3 + 6*(iterations-1), 40*k3 + 6*(iterations-1)))); // snowflake 14
 snowV.push(snowflake_vertexs(iterations, 
-  (42*k + 6*(iterations-1), 42*k + 6*(iterations-1)))); // snowflake 15
+  (42*k3 + 6*(iterations-1), 42*k3 + 6*(iterations-1)))); // snowflake 15
 snowV.push(snowflake_vertexs(iterations, 
-  (44*k + 6*(iterations-1), 46*k + 6*(iterations-1)))); // snowflake 16
+  (44*k3 + 6*(iterations-1), 46*k3 + 6*(iterations-1)))); // snowflake 16
 // for 13 snowflake
 stretching_part(2, iterations, snowV[12], (1*(iterations-1), 1*(iterations-1)));
 // for 14 snowflake
@@ -253,26 +253,18 @@ int snowV_length = snowV.length;
 for(int n = snowV_length-16; n < snowV_length - 8; ++n){
   pair[] new_snowV = copy_snow(snowV[n]);
   shift_snowflake(new_snowV, 
-    ((27*k + 6*(iterations-1)), (21*k + 6*(iterations-1)))
+    ((27*k3 + 6*(iterations-1)), (21*k3 + 6*(iterations-1)))
   );
   snowV.push(new_snowV);
 } 
 for(int n = snowV_length - 8; n < snowV_length; ++n){
   pair[] new_snowV = copy_snow(snowV[n]);
   shift_snowflake(new_snowV, 
-    ((-21*k - 6*(iterations-1))  , (-27*k - 6*(iterations-1))) 
+    ((-21*k3 - 6*(iterations-1))  , (-27*k3 - 6*(iterations-1))) 
   );
   snowV.push(new_snowV);
 } 
 
-// for (int i = 1; i < 2; ++i){
-//   snowV_length = snowV.length;
-//   for(int n = snowV_length-32; n < snowV_length; ++n){
-//     snowV.push(shift_snowflake(copy_snow(snowV[n]), 
-//       ((48*k + 2*6*(iterations-1)), (48*k + 2*6*(iterations-1)))
-//     ));
-//   }
-// }
 
 // draw_grid_and_axes(pic_iter, -3,14*k,-6,13*k, iterations, false); 
 for (int i = 0; i < snowV.length; ++i) {

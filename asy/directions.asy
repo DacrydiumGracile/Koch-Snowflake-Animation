@@ -9,7 +9,7 @@ pair e2 = (1/2, -sqrt(3)/2);
 transform T = (0,0, e1.x, e2.x, e1.y, e2.y);  // аффинное -> декартово
 
 // Векторы в аффинных координатах
-pair[] dirs_affine = { (1,1), (1,-1), (-1,-1), (-1,1), (7, 5), (-5,-7), (5,7), (-7,-5)};
+pair[] dirs_affine = { (9,9), (6,-6), (-9,-9), (-6,6), (11, 7), (-7,-11), (7,11), (-11,-7)};
 string[] names = { "E", "N", "W", "S", "NE", "NW", "SE", "SW" };
 pen[] pens = {red, blue, darkgreen, orange, magenta, cyan, brown, purple};
 

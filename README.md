@@ -12,7 +12,7 @@ The project implements a **periodic infinite animation** of Koch snowflakes usin
 
 The animation is built on:
 
-- An **affine basis** $e_1 = (1/2,\sqrt3/2)$ $e_2 = (1/2,-\sqrt3/2) $ allowing integer coordinates.
+- An **affine basis** $e_1 = (1/2,\sqrt{3}/2)$, $e_2 = (1/2,-\sqrt{3}/2)$ allowing integer coordinates.
 - **Recursive formulas** for the Koch curve vertices.
 - **Duplication of vertices** to split the snowflake into $6$ overlapping parts, enabling independent stretching of selected segments.
 - **16 animation stages** (each subdivided into `steps` sub‑frames) that apply translations or partial stretches to specific snowflake parts.

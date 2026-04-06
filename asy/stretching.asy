@@ -117,17 +117,17 @@ shipout("duplication_of_points_2", pic_iter_2);
 void stretching_part(int part, int iterations, pair[] snowV, pair dxy) {
   assert(part > 0 && part < 7, 
         "part должна быть между 1 и 6 (включая границы)");
-  int k = 4^(iterations - 2);
+  int m = 4^(iterations - 2);
   if (part > 0 && part < 6) {
-    for (int n = 2*(part - 1)*k + (part - 1); 
-             n <= 2*(part + 1)*k + part; ++n) {
+    for (int n = 2*(part - 1)*m + (part - 1); 
+             n <= 2*(part + 1)*m + part; ++n) {
       snowV[n] = snowV[n] + dxy;
     } 
   } else if (part == 6) {
-    for (int n = 10*k + 5; n <= 12*k + 5; ++n) {
+    for (int n = 10*m + 5; n <= 12*m + 5; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
-    for (int n = 0; n <= 2*k; ++n) {
+    for (int n = 0; n <= 2*m; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
   }  
@@ -139,7 +139,7 @@ for (int iterations = 3; iterations <= 4; ++iterations){
   pair[][] snowV; 
   picture pic_iter;
   size(pic_iter, 800,800);
-  int k = 3^(iterations - 2);
+  int k3 = 3^(iterations - 2);
   snowV.push(snowflake_vertexs(iterations));
   stretching_part(2, iterations, snowV[0], (1*(iterations-1), 1*(iterations-1)));
 

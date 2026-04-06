@@ -33,7 +33,7 @@ $$
 y(n) = \begin{cases}
 0, & n = 1;\\
 3^{l(n)-2} - x\bigl(n - 4^{l(n)-2}\bigr) + y\bigl(n - 4^{l(n)-2}\bigr), & b(n)=2,\\
-2\cdot 3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr), & b(n)=3,\\
+3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr), & b(n)=3,\\
 2\cdot 3^{l(n)-2} + y\bigl(n - 3\cdot 4^{l(n)-2}\bigr), & b(n)=4,
 \end{cases}
 $$
@@ -58,7 +58,7 @@ $$
 y(n) = \begin{cases}
 y_0, & n = 1;\\
 3^{l(n)-2} - x\bigl(n - 4^{l(n)-2}\bigr) + y\bigl(n - 4^{l(n)-2}\bigr) + x_0, & b(n)=2,\\
-2\cdot 3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr) - x_0 + y_0, & b(n)=3,\\
+3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr) - x_0 + y_0, & b(n)=3,\\
 2\cdot 3^{l(n)-2} + y\bigl(n - 3\cdot 4^{l(n)-2}\bigr), & b(n)=4.
 \end{cases}
 $$
@@ -118,16 +118,16 @@ $$
 
 Продолжая рассматривать эти $8$ снежинок, мы придём к тому, что можно выделить $8$ интересующих нас направлений. Пусть $S = (x, y)$ – произвольная точка в аффинной системе координат. Определим следующие векторы смещения:
 
-1. **N** (North) – смещение $S + (2k, -2k)$;
-2. **S** (South) – смещение $S + (-2k, 2k)$;
-3. **W** (West) – смещение $S + (-3k, -3k)$;
-4. **E** (East) – смещение $S + (3k, 3k)$;
-5. **NE** (North-East) – смещение $S + (4k-1, 2k+1)$;
-6. **NW** (North-West) – смещение $S + (-2k-1, -4k+1)$;
-7. **SE** (South-East) – смещение $S + (2k+1, 4k-1)$;
-8. **SW** (South-West) – смещение $S + (-4k+1, -2k-1)$.
+1. **N** (North) – смещение $S + (6k, -6k)$;
+2. **S** (South) – смещение $S + (-6k, 6k)$;
+3. **W** (West) – смещение $S + (-9k, -9k)$;
+4. **E** (East) – смещение $S + (9k, 9k)$;
+5. **NE** (North-East) – смещение $S + (11k, 7k)$;
+6. **NW** (North-West) – смещение $S + (-7k, -11k)$;
+7. **SE** (South-East) – смещение $S + (7k, 11k)$;
+8. **SW** (South-West) – смещение $S + (-11k , -7k)$.
 
-Здесь $k = 3^{i-2}$, где $i$ (iterations) – номер итерации снежинки. Для $i = 2$ получим:
+Здесь $k = 3^{i-3}$, где $i$ (iterations) – номер итерации снежинки. Для $i = 3$ получим:
 
 ![Направления смещения](asy/directions.png)
 
@@ -170,17 +170,17 @@ $n = 1,\; 2\cdot 4^{i-2}+1,\; 4\cdot 4^{i-2}+1,\; 6\cdot 4^{i-2}+1,\; 8\cdot 4^{
 void stretching_part(int part, int iterations, pair[] snowV, pair dxy) {
   assert(part > 0 && part < 7, 
         "part должна быть между 1 и 6 (включая границы)");
-  int k = 4^(iterations - 2);
+  int m = 4^(iterations - 2);
   if (part > 0 && part < 6) {
-    for (int n = 2*(part - 1)*k + (part - 1); 
-             n <= 2*(part + 1)*k + part; ++n) {
+    for (int n = 2*(part - 1)*m + (part - 1); 
+             n <= 2*(part + 1)*m + part; ++n) {
       snowV[n] = snowV[n] + dxy;
     } 
   } else if (part == 6) {
-    for (int n = 10*k + 5; n <= 12*k + 5; ++n) {
+    for (int n = 10*m + 5; n <= 12*m + 5; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
-    for (int n = 0; n <= 2*k; ++n) {
+    for (int n = 0; n <= 2*m; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
   }  
@@ -360,11 +360,11 @@ for (int i = 0; i <= all_frame - 1; ++ i){
 pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
   int i = iterations;
   if (1 <= frame_number && frame_number <= steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (steps + 1 <= frame_number && frame_number <= 2*steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (2*steps + 1 <= frame_number && frame_number <= 3*steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (3*steps + 1 <= frame_number && frame_number <= 4*steps) {
       stretching_part(3, i, snowV, (1*(i-1)/steps, 1*(i-1)/steps));
   } else if (4*steps + 1 <= frame_number && frame_number <= 5*steps) {
@@ -380,11 +380,11 @@ pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
   } else if (7*steps + 1 <= frame_number && frame_number <= 8*steps) {
       stretching_part(5, i, snowV, (2*(i-1)/steps, 2*(i-1)/steps));
   } else if (8*steps + 1 <= frame_number && frame_number <= 9*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (9*steps + 1 <= frame_number && frame_number <= 10*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (10*steps + 1 <= frame_number && frame_number <= 11*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (11*steps + 1 <= frame_number && frame_number <= 12*steps) {
     stretching_part(2, i, snowV, (1*(i-1)/steps, 1*(i-1)/steps));
   } else if (12*steps + 1 <= frame_number && frame_number <= 13*steps) {
@@ -410,7 +410,7 @@ pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
 
 Всего имеется $16$ основных этапов анимации. Чтобы добавить дополнительную плавность, каждый этап разбивается на `steps` шагов. Именно здесь мы впервые используем операции с рациональными числами. Если бы мы хотели этого избежать, можно было бы изменить масштаб снежинок так, чтобы, например, первая вершина имела координаты $(0,0)$, а вторая – не $(1,1)$, а $(\text{steps}, \text{steps})$.
 
-Также отметим, чтобы снежинка, например, с номером $1$, прошла все $16$ стадий, каждая из которых состоит из `steps` шагов, необходимо $\text{all\_frames} = 16 \cdot \text{steps}$ кадров. При этом через `all_frames` она сместится на $12\cdot (i-1)$, где $i$ – выбранный номер итерации снежинки. К этому мы ещё вернёмся, а пока поговорим об области обзора и нужном нам угле.
+Также отметим, чтобы снежинка, например, с номером $1$, прошла все $16$ стадий, каждая из которых состоит из `steps` шагов, необходимо $\text{allframes} = 16 \cdot \text{steps}$ кадров. При этом через `allframes` она сместится на $12\cdot (i-1)$, где $i$ – выбранный номер итерации снежинки. К этому мы ещё вернёмся, а пока поговорим об области обзора и нужном нам угле.
 
 ## Видимая область
 

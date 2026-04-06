@@ -33,7 +33,7 @@ $$
 y(n) = \begin{cases}
 0, & n = 1;\\
 3^{l(n)-2} - x\bigl(n - 4^{l(n)-2}\bigr) + y\bigl(n - 4^{l(n)-2}\bigr), & b(n)=2,\\
-2\cdot 3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr), & b(n)=3,\\
+3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr), & b(n)=3,\\
 2\cdot 3^{l(n)-2} + y\bigl(n - 3\cdot 4^{l(n)-2}\bigr), & b(n)=4,
 \end{cases}
 $$
@@ -58,7 +58,7 @@ $$
 y(n) = \begin{cases}
 y_0, & n = 1;\\
 3^{l(n)-2} - x\bigl(n - 4^{l(n)-2}\bigr) + y\bigl(n - 4^{l(n)-2}\bigr) + x_0, & b(n)=2,\\
-2\cdot 3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr) - x_0 + y_0, & b(n)=3,\\
+3^{l(n)-2} + x\bigl(n - 2\cdot 4^{l(n)-2}\bigr) - x_0 + y_0, & b(n)=3,\\
 2\cdot 3^{l(n)-2} + y\bigl(n - 3\cdot 4^{l(n)-2}\bigr), & b(n)=4.
 \end{cases}
 $$
@@ -118,16 +118,16 @@ Notice that snowflake $8$ is strictly above snowflake $1$, and we assume that sn
 
 Continuing to examine these $8$ snowflakes, we can identify $8$ directions of interest. Let $S = (x, y)$ be an arbitrary point in the affine coordinate system. Define the following translation vectors:
 
-1. **N** (North) – shift $S + (2k, -2k)$;
-2. **S** (South) – shift $S + (-2k, 2k)$;
-3. **W** (West) – shift $S + (-3k, -3k)$;
-4. **E** (East) – shift $S + (3k, 3k)$;
-5. **NE** (North-East) – shift $S + (4k-1, 2k+1)$;
-6. **NW** (North-West) – shift $S + (-2k-1, -4k+1)$;
-7. **SE** (South-East) – shift $S + (2k+1, 4k-1)$;
-8. **SW** (South-West) – shift $S + (-4k+1, -2k-1)$.
+1. **N** (North) – shift $S + (6k, -6k)$;
+2. **S** (South) – shift $S + (-6k, 6k)$;
+3. **W** (West) – shift $S + (-9k, -9k)$;
+4. **E** (East) – shift $S + (9k, 9k)$;
+5. **NE** (North-East) – shift $S + (11k, 7k)$;
+6. **NW** (North-West) – shift $S + (-7k, -11k)$;
+7. **SE** (South-East) – shift $S + (7k, 11k)$;
+8. **SW** (South-West) – shift $S + (-11k , -7k)$.
 
-Here $k = 3^{i-2}$, where $i$ (iterations) is the snowflake iteration number. For $i = 2$ we get:
+Here $k = 3^{i-3}$, where $i$ (iterations) is the snowflake iteration number. For $i = 3$ we get:
 
 ![Direction vectors](asy/directions.png)
 
@@ -170,17 +170,17 @@ If we apply translation operations only to certain parts of the snowflakes rathe
 void stretching_part(int part, int iterations, pair[] snowV, pair dxy) {
   assert(part > 0 && part < 7, 
         "part must be between 1 and 6 (inclusive)");
-  int k = 4^(iterations - 2);
+  int m = 4^(iterations - 2);
   if (part > 0 && part < 6) {
-    for (int n = 2*(part - 1)*k + (part - 1); 
-             n <= 2*(part + 1)*k + part; ++n) {
+    for (int n = 2*(part - 1)*m + (part - 1); 
+             n <= 2*(part + 1)*m + part; ++n) {
       snowV[n] = snowV[n] + dxy;
     } 
   } else if (part == 6) {
-    for (int n = 10*k + 5; n <= 12*k + 5; ++n) {
+    for (int n = 10*m + 5; n <= 12*m + 5; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
-    for (int n = 0; n <= 2*k; ++n) {
+    for (int n = 0; n <= 2*m; ++n) {
       snowV[n] = snowV[n] + dxy;
     }
   }  
@@ -360,11 +360,11 @@ The main work is done by the function `update_snowflake_by_frame`:
 pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
   int i = iterations;
   if (1 <= frame_number && frame_number <= steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (steps + 1 <= frame_number && frame_number <= 2*steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (2*steps + 1 <= frame_number && frame_number <= 3*steps) {
-      shift_snowflake(snowV, (-1/steps, 1/steps));
+      shift_snowflake(snowV, (-k/steps, k/steps));
   } else if (3*steps + 1 <= frame_number && frame_number <= 4*steps) {
       stretching_part(3, i, snowV, (1*(i-1)/steps, 1*(i-1)/steps));
   } else if (4*steps + 1 <= frame_number && frame_number <= 5*steps) {
@@ -380,11 +380,11 @@ pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
   } else if (7*steps + 1 <= frame_number && frame_number <= 8*steps) {
       stretching_part(5, i, snowV, (2*(i-1)/steps, 2*(i-1)/steps));
   } else if (8*steps + 1 <= frame_number && frame_number <= 9*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (9*steps + 1 <= frame_number && frame_number <= 10*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (10*steps + 1 <= frame_number && frame_number <= 11*steps) {
-      shift_snowflake(snowV, (1/steps, -1/steps));
+      shift_snowflake(snowV, (k/steps, -k/steps));
   } else if (11*steps + 1 <= frame_number && frame_number <= 12*steps) {
     stretching_part(2, i, snowV, (1*(i-1)/steps, 1*(i-1)/steps));
   } else if (12*steps + 1 <= frame_number && frame_number <= 13*steps) {
@@ -410,7 +410,7 @@ pair[] update_snowflake_by_frame(picture pic, int frame_number, pair[] snowV) {
 
 There are $16$ main stages in the animation. To add extra smoothness, each stage is divided into `steps` sub‑frames. This is the first time we use rational numbers. If we wanted to avoid this, we could rescale the snowflakes so that, for example, the first vertex has coordinates $(0,0)$ and the second not $(1,1)$ but $(\text{steps}, \text{steps})$.
 
-Also note that for a snowflake (e.g., number $1$) to go through all $16$ stages, each consisting of `steps` steps, we need $\text{all\_frames} = 16 \cdot \text{steps}$ frames. During these `all_frames` the snowflake will be shifted by $12\cdot (i-1)$, where $i$ is the chosen snowflake iteration. We will come back to this; but first we discuss the viewport and the required rotation angle.
+Also note that for a snowflake (e.g., number $1$) to go through all $16$ stages, each consisting of `steps` steps, we need $\text{allframes} = 16 \cdot \text{steps}$ frames. During these `all_frames` the snowflake will be shifted by $12\cdot (i-1)$, where $i$ is the chosen snowflake iteration. We will come back to this; but first we discuss the viewport and the required rotation angle.
 
 ## Visible Area
 
@@ -497,7 +497,7 @@ $$
 
 For $i = 3$ we get $S = 168$. This can be verified from the image: snowflake $2$ has coordinates $(279,225)$, snowflake $1$ has $(111,57)$, the difference is $(168,168)$.
 
-We already know that over `all_frames` the shift is $u(i) = 12\cdot(i-1)$. Then
+We already know that over `allframes` the shift is $u(i) = 12\cdot(i-1)$. Then
 
 $$
 K(i) = \frac{S(i)}{u(i)} = \frac{16\cdot 3^{i-1} + 2\cdot 6\cdot (i-1)}{12\cdot(i-1)}.
@@ -509,7 +509,7 @@ For different $i$ we obtain:
 |------|---|---|---|---|---|
 | $K(i)$ | 7 | 13 | 28 | $\frac{329}{5}$ | 163 |
 
-Thus, for $i = 3$ we need $7\cdot \text{all\_frames} = 7\cdot 16\cdot \text{steps}$ frames. Since we set `steps = 4`, we need $7\cdot 16 \cdot 4 = 448$ frames. If the frame delay is the same as in the video (100 ms), the video length will be $448 \cdot 0.1 = 44.8$ seconds.
+Thus, for $i = 3$ we need $7\cdot \text{allframes} = 7\cdot 16\cdot \text{steps}$ frames. Since we set `steps = 4`, we need $7\cdot 16 \cdot 4 = 448$ frames. If the frame delay is the same as in the video (100 ms), the video length will be $448 \cdot 0.1 = 44.8$ seconds.
 
 As an example, consider the concrete case to estimate file size and runtime. Save all $449$ frames as PDF files. Each frame size is $1200\times 1200$. Asymptote took about $3$ minutes; total size of all files is $7.2$ MB. Then we create a GIF using ImageMagick. Since only $2$ colours are used, we first create a palette:
 
